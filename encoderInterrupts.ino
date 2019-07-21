@@ -16,6 +16,12 @@ int revCount = 0;
 volatile bool ccw = false;
 volatile bool cw = false;
 
+
+//note: there may only be 600 ticks on this encoder,
+//but because it reads the rising and falling edge there are actually
+//1200 ticks per 360 degrees of rotation
+//thus the following conversion factors are used:
+
 //number of radians per tick
 float k = (3.1415926535) / 600;
 
@@ -28,9 +34,12 @@ void setup() {
 Serial.begin(115200);
 Serial.println("Encoder Interrupt test:");
 
+  //set pins to pull up and assign interrupt callback functions to the appropriate change and pin
+  //interruptA and interruptB are the pin assignments
+  //aFall, aRise, bFall, and bRise are the functions assigned to pin changes
   pinMode(interruptA, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(interruptA), aFall, FALLING);
-    attachInterrupt(digitalPinToInterrupt(interruptA), aRise, RISING);
+  attachInterrupt(digitalPinToInterrupt(interruptA), aRise, RISING);
   
   pinMode(interruptB, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(interruptB), bFall, FALLING);
@@ -61,6 +70,17 @@ Serial.println(revCount);
 delay(100);
   
 }
+
+//general theory behind what is going on here
+//you know which direction it is spinning based on 
+//whether or not the other pin is high or low
+//refer to this image for clarity
+//https://i.stack.imgur.com/GfuJB.jpg
+//note that on a given signals rising edge that the other signal is 
+//either rising or falling depending on which direction it is turning
+//aside: when connected to an oscilloscope the encoder does not actually produce a square wave
+//but this still works in principal
+//this algorithm would best be implemented on an FPGA and would work the same way as this in principle
 
 void aRise(){
   if(digitalRead(interruptB)){
