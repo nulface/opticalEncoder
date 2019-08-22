@@ -1,9 +1,3 @@
-/*
-there are 600 total ticks on this encoder
-however, because I am reading rising and falling edges I get twice the resolution
-*/
-
-
 //connect a and b wires of encoder to interrupt pins
 //connect a to pin 2, and b to pin 3
 const byte interruptA = 2;
@@ -79,7 +73,7 @@ delay(100);
 //note that on a given signals rising edge that the other signal is 
 //either rising or falling depending on which direction it is turning
 //aside: when connected to an oscilloscope the encoder does not actually produce a square wave
-//but this still works in principal
+//but this still works in principle
 //this algorithm would best be implemented on an FPGA and would work the same way as this in principle
 
 void aRise(){
